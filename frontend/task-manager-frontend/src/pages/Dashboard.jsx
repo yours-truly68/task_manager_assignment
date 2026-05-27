@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 
 import { getTasks } from "../services/taskServices";
-import { createTask } from "../services/taskServices";
+import { createTask, deleteTask, updateTask } from "../services/taskServices";
 import Navbar from "../components/Navbar.jsx";
+import TaskCard from "../components/TaskCard.jsx";
+import EditTaskModal from "../components/EditTaskModal";
 
 function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("todo");
+  const [priority, setPriority] = useState("medium");
+  const [editingTask, setEditingTask] = useState(null);
 
   useEffect(() => {
     fetchTasks();
@@ -17,7 +22,7 @@ function Dashboard() {
     try {
       const data = await getTasks();
 
-      setTasks(data);
+      setTasks(data.tasks);
     } catch (error) {
       console.log(error);
     }
@@ -29,8 +34,8 @@ function Dashboard() {
     const taskData = {
       title,
       description,
-      status: "todo",
-      priority: "medium",
+      status,
+      priority,
     };
 
     try {
@@ -38,6 +43,8 @@ function Dashboard() {
 
       setTitle("");
       setDescription("");
+      setStatus("todo");
+      setPriority("medium");
 
       fetchTasks();
     } catch (error) {
@@ -45,60 +52,145 @@ function Dashboard() {
     }
   };
 
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await deleteTask(taskId);
+
+      fetchTasks();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUpdateTask = async (taskId, updatedData) => {
+    try {
+      await updateTask(taskId, updatedData);
+
+      setEditingTask(null);
+
+      fetchTasks();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-[#eef2ff] via-[#f8f5ff] to-[#fdf2f8]">
       <Navbar />
 
-      <div className="p-8">
-        <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      <div className="max-w-7xl mx-auto px-6 py-10">
+        {/* HEADER */}
+        <div className="mb-10">
+          <h1 className="text-5xl font-bold text-gray-900">Dashboard</h1>
 
+          <p className="text-gray-500 mt-2 text-lg">
+            Create and manage your tasks efficiently
+          </p>
+        </div>
+
+        {/* CREATE TASK CARD */}
         <form
           onSubmit={handleCreateTask}
-          className="bg-white p-6 rounded-xl shadow-sm mb-6 space-y-4"
+          className="bg-white/80 backdrop-blur-md rounded-3xl p-8 shadow-xl shadow-purple-100/40 mb-8 border border-white/40"
         >
-          <h2 className="text-xl font-semibold">Create Task</h2>
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-600 text-2xl">
+              +
+            </div>
 
-          <input
-            type="text"
-            placeholder="Task title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border p-3 rounded-lg"
-          />
+            <h2 className="text-3xl font-semibold text-gray-900">
+              Create Task
+            </h2>
+          </div>
 
-          <textarea
-            placeholder="Task description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full border p-3 rounded-lg"
-          />
+          <div className="space-y-5">
+            <input
+              type="text"
+              placeholder="Task title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full rounded-2xl border border-gray-200 bg-white/70 p-4 outline-none focus:ring-2 focus:ring-purple-300 transition-all"
+            />
 
-          <button
-            type="submit"
-            className="bg-black text-white px-4 py-2 rounded-lg"
-          >
-            Create Task
-          </button>
+            <textarea
+              placeholder="Task description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={6}
+              className="w-full rounded-2xl border border-gray-200 bg-white/70 p-4 outline-none resize-none focus:ring-2 focus:ring-purple-300 transition-all"
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* STATUS */}
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-700">
+                  Status
+                </label>
+
+                <select
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  className="w-full rounded-2xl border border-gray-200 bg-white/70 p-4 outline-none focus:ring-2 focus:ring-purple-300 transition-all"
+                >
+                  <option value="todo">Todo</option>
+
+                  <option value="in-progress">In Progress</option>
+
+                  <option value="done">Done</option>
+                </select>
+              </div>
+
+              {/* PRIORITY */}
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-700">
+                  Priority
+                </label>
+
+                <select
+                  value={priority}
+                  onChange={(e) => setPriority(e.target.value)}
+                  className="w-full rounded-2xl border border-gray-200 bg-white/70 p-4 outline-none focus:ring-2 focus:ring-purple-300 transition-all"
+                >
+                  <option value="low">Low</option>
+
+                  <option value="medium">Medium</option>
+
+                  <option value="high">High</option>
+                </select>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-2xl font-medium shadow-lg shadow-purple-300/40 hover:scale-[1.02] transition-all duration-200"
+            >
+              Create Task
+            </button>
+          </div>
         </form>
 
-        <div className="space-y-4">
+        {/* TASK LIST */}
+        <div className="space-y-6">
           {tasks.length === 0 ? (
-            <div className="bg-white p-6 rounded-xl text-center shadow-sm">
-              <p className="text-gray-500">No tasks yet.</p>
+            <div className="bg-white rounded-3xl p-10 text-center shadow-lg">
+              <p className="text-gray-500 text-lg">No tasks yet.</p>
             </div>
           ) : (
             tasks.map((task) => (
-              <div
+              <TaskCard
                 key={task._id}
-                className="border p-4 rounded-lg bg-white shadow-sm"
-              >
-                <h2 className="font-semibold">{task.title}</h2>
-
-                <p className="text-gray-600">{task.description}</p>
-              </div>
+                task={task}
+                onDelete={handleDeleteTask}
+                onEdit={setEditingTask}
+              />
             ))
           )}
         </div>
+        {editingTask && (
+          <EditTaskModal
+            task={editingTask}
+            onClose={() => setEditingTask(null)}
+            onUpdate={handleUpdateTask}
+          />
+        )}
       </div>
     </div>
   );
