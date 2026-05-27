@@ -1,17 +1,20 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
-import Input from "../components/ui/Input";
-import Button from "../components/ui/Button";
+import Input from "../components/ui/Input.jsx";
+import Button from "../components/ui/Button.jsx";
 import { Link } from "react-router-dom";
 import { registerUser } from "../services/authService.js";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../services/authService.js";
+import { AuthContext } from "../context/AuthContext.jsx";
 
 function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,9 +30,16 @@ function Register() {
 
       console.log(data);
 
-      toast.success("Registration successful");
-      navigate("/");
+      const loginData = await loginUser({
+        email,
+        password,
+      });
 
+      login(loginData.access_token);
+
+      toast.success("Registration successful");
+
+      navigate("/dashboard");
       // Redirect to login page after successful registration
     } catch (error) {
       console.log(error);
