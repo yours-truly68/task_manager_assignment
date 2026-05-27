@@ -34,7 +34,7 @@ function Dashboard() {
 
       const data = await getTasks(sortBy, order);
 
-      setTasks(data.tasks);
+      setTasks(data.tasks || []);
     } catch (error) {
       console.log(error);
     } finally {
@@ -53,19 +53,26 @@ function Dashboard() {
     };
 
     try {
+      // CREATE TASK
       await createTask(taskData);
 
+      // REFRESH TASKS
+      await fetchTasks();
+
+      // CLEAR FORM
       setTitle("");
       setDescription("");
       setStatus("todo");
       setPriority("medium");
-      showCreateForm(false);
 
-      fetchTasks();
-      toast.success("Task created successfully!");
+      // COLLAPSE FORM
+      setShowCreateForm(false);
+
+      toast.success("Task created successfully");
     } catch (error) {
       console.log(error);
-      toast.error("Failed to create task: " + error.response.data.message);
+
+      toast.error("Failed to create task");
     }
   };
 
@@ -73,7 +80,7 @@ function Dashboard() {
     try {
       await deleteTask(taskId);
 
-      fetchTasks();
+      await fetchTasks();
       toast.success("Task deleted successfully!");
     } catch (error) {
       console.log(error);
@@ -87,7 +94,7 @@ function Dashboard() {
 
       setEditingTask(null);
 
-      fetchTasks();
+      await fetchTasks();
       toast.success("Task updated successfully!");
     } catch (error) {
       console.log(error);
