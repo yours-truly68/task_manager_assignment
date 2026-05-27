@@ -30,8 +30,7 @@ function Login() {
 
       login(data.access_token);
 
-      toast.success("Login successful");
-
+      toast.success("Login successful!");
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
