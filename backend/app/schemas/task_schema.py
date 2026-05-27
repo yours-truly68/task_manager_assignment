@@ -38,3 +38,8 @@ class TaskResponse(BaseModel):
     priority: TaskPriority
     created_at: datetime
     user_id: str
+
+
+class SortOrder(str, Enum):
+    asc = "asc"
+    desc = "desc"

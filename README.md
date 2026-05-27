@@ -1,66 +1,55 @@
 # Task Manager App
 
-A full-stack Task Manager application built using React, FastAPI, and MongoDB.
+A full-stack Task Manager application built using FastAPI, MongoDB Atlas, React, and Tailwind CSS.
 
-The application allows users to:
+## Features
 
-* Register and login securely
-* Manage tasks across multiple stages
-* Access protected routes using JWT authentication
+### Authentication
+
+* User Registration
+* User Login
+* JWT Authentication
+* Protected Routes
+* Password Hashing using bcrypt
+
+### Task Management
+
+* Create Tasks
+* Get All Tasks
+* Get Single Task
+* Update Tasks
+* Delete Tasks
+
+### Advanced Features
+
+* User-specific task ownership
+* Task sorting
+* Enum-based validation
+* Protected CRUD APIs
+* MongoDB Atlas integration
+* Swagger API documentation
 
 ---
 
 # Tech Stack
+
+## Backend
+
+* FastAPI
+* MongoDB Atlas
+* PyMongo
+* Python-Jose (JWT)
+* Passlib + bcrypt
+* Pydantic
+* Uvicorn
 
 ## Frontend
 
 * React
 * Vite
 * Tailwind CSS
-
-## Backend
-
-* FastAPI
-* Python
-* Uvicorn
-
-## Database
-
-* MongoDB Atlas
-* PyMongo
-
-## Authentication
-
-* JWT (JSON Web Tokens)
-* Passlib + Bcrypt password hashing
-
----
-
-# Features Implemented
-
-## Authentication
-
-* User Registration
-* User Login
-* Password Hashing using bcrypt
-* JWT Token Generation
-* Protected Route Authentication
-
-## Backend Features
-
-* FastAPI project setup
-* MongoDB Atlas integration
-* Environment variable management
-* Request validation using Pydantic
-* Modular backend architecture
-
-## API Documentation
-
-* Swagger UI documentation available at:
-
-```bash
-http://127.0.0.1:8000/docs
-```
+* Axios
+* React Router DOM
 
 ---
 
@@ -70,80 +59,122 @@ http://127.0.0.1:8000/docs
 backend/
 │
 ├── app/
-│   ├── database/
-│   │   └── mongodb.py
-│   │
 │   ├── routes/
-│   │   └── auth.py
-│   │
 │   ├── schemas/
-│   │   └── user_schema.py
-│   │
+│   ├── database/
 │   ├── utils/
-│   │   ├── auth.py
-│   │   ├── jwt_handler.py
-│   │   └── dependencies.py
-│   │
 │   └── main.py
 │
-├── venv/
-├── .env
 ├── requirements.txt
-└── README.md
+└── .env
 ```
+
+---
+
+# Authentication Flow
+
+1. User registers account
+2. Password gets hashed before storing
+3. User logs in
+4. JWT token generated
+5. Protected routes validate JWT
+6. User-specific task access enforced
+
+---
+
+# Task Features
+
+Each task contains:
+
+* Title
+* Description
+* Status
+* Priority
+* Created At
+* User Ownership
+
+### Status Options
+
+* todo
+* in-progress
+* done
+
+### Priority Options
+
+* low
+* medium
+* high
+
+---
+
+# API Endpoints
+
+## Authentication
+
+| Method | Endpoint         | Description   |
+| ------ | ---------------- | ------------- |
+| POST   | `/auth/register` | Register user |
+| POST   | `/auth/login`    | Login user    |
+
+---
+
+## Tasks
+
+| Method | Endpoint           | Description        |
+| ------ | ------------------ | ------------------ |
+| POST   | `/tasks`           | Create task        |
+| GET    | `/tasks`           | Get all user tasks |
+| GET    | `/tasks/{task_id}` | Get single task    |
+| PUT    | `/tasks/{task_id}` | Update task        |
+| DELETE | `/tasks/{task_id}` | Delete task        |
+
+---
+
+# Sorting Support
+
+Tasks support sorting using query parameters:
+
+```bash
+GET /tasks?sort_by=created_at&order=desc
+```
+
+### Supported Order Values
+
+* asc
+* desc
 
 ---
 
 # Environment Variables
 
-Create a `.env` file inside the backend folder.
+Create a `.env` file:
 
 ```env
 MONGO_URI=your_mongodb_connection_string
-DATABASE_NAME=taskmanager
-JWT_SECRET=your_secret_key
+JWT_SECRET_KEY=your_secret_key
 ```
 
 ---
 
-# Installation & Setup
+# Installation
 
-## 1. Clone Repository
-
-```bash
-git clone <repository_url>
-cd Task_Manager
-```
-
----
-
-## 2. Create Virtual Environment
-
-### Mac/Linux
+## Backend Setup
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
-```
+git clone <repository-url>
 
-### Windows
+cd backend
 
-```bash
 python -m venv venv
-venv\Scripts\activate
-```
 
----
+source venv/bin/activate
 
-## 3. Install Dependencies
-
-```bash
 pip install -r requirements.txt
 ```
 
 ---
 
-## 4. Run Backend Server
+# Run Backend
 
 ```bash
 python -m uvicorn app.main:app --reload
@@ -151,94 +182,35 @@ python -m uvicorn app.main:app --reload
 
 ---
 
-# Authentication Flow
+# API Documentation
 
-## Register
+Swagger Docs:
 
-Users can create an account using:
-
-* name
-* email
-* password
-
-Passwords are securely hashed before storage.
+```bash
+http://127.0.0.1:8000/docs
+```
 
 ---
 
-## Login
+# Security Features
 
-Users receive a JWT access token after successful login.
-
----
-
-## Protected Routes
-
-JWT authentication is used to protect private routes.
-
----
-
-# Technical Decisions
-
-## Why FastAPI?
-
-* Fast development speed
-* Automatic Swagger documentation
-* Built-in validation using Pydantic
-* Clean API architecture
-
-## Why MongoDB?
-
-* Flexible document-based database
-* Faster setup for small projects
-* Easy integration with FastAPI
-
-## Why JWT?
-
-* Stateless authentication
-* Simple frontend integration
-* Industry-standard approach
-
----
-
-# Challenges Faced
-
-* MongoDB SSL certificate verification issue on macOS
-* Bcrypt compatibility issues with Python 3.13
-* Virtual environment interpreter conflicts in VS Code
-
----
-
-# Fixes Applied
-
-* Added `certifi` for MongoDB SSL verification
-* Downgraded bcrypt to a stable compatible version
-* Configured VS Code interpreter to use virtual environment
-
----
-
-# Current Progress
-
-Completed:
-
-* Backend setup
-* MongoDB integration
-* Authentication system
-* JWT protected routes
-
-In Progress:
-
-* Task CRUD APIs
-* Frontend implementation
+* Password hashing
+* JWT authentication
+* Protected routes
+* Resource ownership validation
+* Environment variable protection
 
 ---
 
 # Future Improvements
 
-* Drag and drop task management
-* Task filtering and search
-* Due dates and reminders
-* Deployment using Render and Vercel
-* Frontend state management improvements
+* Frontend dashboard
+* Drag and drop Kanban board
+* Task filtering
+* Due dates
+* Search functionality
+* Dark mode
+* Deployment
 
 ---
 

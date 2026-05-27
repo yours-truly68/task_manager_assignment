@@ -1,2 +1,59 @@
+# Python
+
+venv/
+**pycache**/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment Variables
+
 .env
-__pychance__
+
+# macOS
+
+.DS_Store
+
+# VS Code
+
+.vscode/
+
+# JetBrains IDEs
+
+.idea/
+
+# Logs
+
+*.log
+
+# Build / Distribution
+
+build/
+dist/
+
+# Node Modules (for frontend later)
+
+node_modules/
+
+# Tailwind / Vite
+
+coverage/
+
+# Cache
+
+.cache/
+
+# Pytest
+
+.pytest_cache/
+
+# Mypy
+
+.mypy_cache/
+
+# Environment files
+
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

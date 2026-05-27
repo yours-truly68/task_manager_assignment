@@ -1,5 +1,6 @@
-from fastapi import HTTPException, APIRouter, Depends, status
+from fastapi import HTTPException, APIRouter, Depends, status, Query
 from datetime import datetime
+from app.schemas.task_schema import SortOrder
 
 from app.schemas.task_schema import TaskCreate
 from app.utils.dependencies import get_current_user
@@ -27,9 +28,18 @@ def create_task(task: TaskCreate, current_user: dict = Depends(get_current_user)
 
 
 @router.get("/tasks")
-def get_tasks(current_user: dict = Depends(get_current_user)):
+def get_tasks(
+    current_user: dict = Depends(get_current_user),
+    sort_by: str = Query(default="created_at", description="Field to sort by"),
+    order: SortOrder = Query(default="desc", description="Sort order: asc or desc"),
+):
+    sort_direction = -1 if order == SortOrder.desc else 1
 
-    tasks = list(task_collection.find({"user_id": str(current_user["_id"])}))
+    tasks = list(
+        task_collection.find({"user_id": str(current_user["_id"])}).sort(
+            sort_by, sort_direction
+        )
+    )
 
     if not tasks:
         return {"tasks": tasks, "count": len(tasks), "message": "No tasks found"}
