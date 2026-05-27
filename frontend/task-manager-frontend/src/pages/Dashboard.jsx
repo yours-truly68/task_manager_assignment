@@ -5,6 +5,7 @@ import { createTask, deleteTask, updateTask } from "../services/taskServices";
 import Navbar from "../components/Navbar.jsx";
 import TaskCard from "../components/TaskCard.jsx";
 import EditTaskModal from "../components/EditTaskModal";
+import toast from "react-hot-toast";
 
 function Dashboard() {
   const [tasks, setTasks] = useState([]);
@@ -13,6 +14,7 @@ function Dashboard() {
   const [status, setStatus] = useState("todo");
   const [priority, setPriority] = useState("medium");
   const [editingTask, setEditingTask] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchTasks();
@@ -20,11 +22,15 @@ function Dashboard() {
 
   async function fetchTasks() {
     try {
+      setLoading(true);
+
       const data = await getTasks();
 
       setTasks(data.tasks);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -46,9 +52,12 @@ function Dashboard() {
       setStatus("todo");
       setPriority("medium");
 
+      toast.success("Task created successfully!");
+
       fetchTasks();
     } catch (error) {
       console.log(error);
+      toast.error("Failed to create task: " + error.response.data.message);
     }
   };
 
@@ -56,9 +65,12 @@ function Dashboard() {
     try {
       await deleteTask(taskId);
 
+      toast.success("Task deleted successfully!");
+
       fetchTasks();
     } catch (error) {
       console.log(error);
+      toast.error("Failed to delete task: " + error.response.data.message);
     }
   };
 
@@ -68,11 +80,24 @@ function Dashboard() {
 
       setEditingTask(null);
 
+      toast.success("Task updated successfully!");
+
       fetchTasks();
     } catch (error) {
       console.log(error);
+      toast.error("Failed to update task: " + error.response.data.message);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#eef2ff] via-[#f8f5ff] to-[#fdf2f8]">
+        <div className="text-2xl font-semibold text-gray-600 animate-pulse">
+          Loading tasks...
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#eef2ff] via-[#f8f5ff] to-[#fdf2f8]">
       <Navbar />
@@ -80,7 +105,9 @@ function Dashboard() {
       <div className="max-w-7xl mx-auto px-6 py-10">
         {/* HEADER */}
         <div className="mb-10">
-          <h1 className="text-5xl font-bold text-gray-900">Dashboard</h1>
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900">
+            Dashboard
+          </h1>
 
           <p className="text-gray-500 mt-2 text-lg">
             Create and manage your tasks efficiently
