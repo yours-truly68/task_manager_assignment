@@ -111,7 +111,16 @@ function Dashboard() {
 
   const currentTasks = filteredTasks.slice(indexOfFirstTask, indexOfLastTask);
 
-  const totalPages = Math.ceil(filteredTasks.length / tasksPerPage);
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredTasks.length / tasksPerPage),
+  );
+
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [filteredTasks, currentPage, totalPages]);
 
   if (loading) {
     return (
