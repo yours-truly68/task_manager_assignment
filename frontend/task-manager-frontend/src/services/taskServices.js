@@ -1,7 +1,12 @@
 import api from "../api/axios";
 
-export const getTasks = async () => {
-  const response = await api.get("/tasks");
+export const getTasks = async (sortBy, order) => {
+  const response = await api.get("/tasks", {
+    params: {
+      sort_by: sortBy,
+      order: order,
+    },
+  });
 
   return response.data;
 };
