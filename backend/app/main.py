@@ -8,7 +8,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://task-manager-assignment-3vq3-83ub51s0b.vercel.app",
+        "http://localhost:5173",
+    ],
     allow_credentials=True,
     allow_headers=["*"],
     allow_methods=["*"],
