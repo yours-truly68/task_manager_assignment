@@ -15,7 +15,7 @@ function TaskCard({ task, onDelete, onEdit }) {
     high: "bg-red-100 text-red-700",
   };
   return (
-    <div className="bg-white/80 backdrop-blur-md rounded-3xl p-6 shadow-xl shadow-gray-200/40 border border-white/40 flex items-center justify-between hover:translate-y-[-2px] transition-all duration-200">
+    <div className="bg-white/80 backdrop-blur-md rounded-3xl p-6 shadow-xl shadow-gray-200/40 border border-white/40 flex flex-col md:flex-row md:items-center md:justify-between gap-6 hover:translate-y-[-2px] transition-all duration-200">
       {/* LEFT */}
       <div className="flex items-center gap-5">
         <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-600 text-2xl">
