@@ -3,18 +3,47 @@ import { useState } from "react";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import { Link } from "react-router-dom";
+import { registerUser } from "../services/authService.js";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const userData = {
+      name: username,
+      email,
+      password,
+    };
+
+    try {
+      const data = await registerUser(userData);
+
+      console.log(data);
+
+      toast.success("Registration successful");
+      navigate("/");
+
+      // Redirect to login page after successful registration
+    } catch (error) {
+      console.log(error);
+
+      toast.error("Registration failed: " + error.response.data.message);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
         <h1 className="text-3xl font-bold mb-6 text-center">Register</h1>
 
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             label="Username"
             type="text"
