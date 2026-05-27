@@ -38,12 +38,10 @@ function Register() {
       login(loginData.access_token);
 
       toast.success("Registration successful");
-
       navigate("/dashboard");
       // Redirect to login page after successful registration
     } catch (error) {
       console.log(error);
-
       toast.error("Registration failed: " + error.response.data.message);
     }
   };
