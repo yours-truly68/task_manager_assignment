@@ -22,17 +22,6 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // PASSWORD VALIDATION
-    const passwordRegex = /^(?=.*\d).{8,}$/;
-
-    if (!passwordRegex.test(password)) {
-      toast.error(
-        "Password must be at least 8 characters and contain a number",
-      );
-
-      return;
-    }
-
     const userData = {
       email,
       password,
