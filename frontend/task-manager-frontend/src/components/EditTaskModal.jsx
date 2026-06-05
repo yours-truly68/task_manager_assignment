@@ -74,7 +74,7 @@ function EditTaskModal({ task, onClose, onUpdate }) {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-2xl font-medium"
+            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-2xl font-medium hover:from-purple-700 hover:to-indigo-700 transition-colors"
           >
             Update Task
           </button>
